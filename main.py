@@ -1,8 +1,9 @@
 from utils import load_images
+from utils import Slider
 
 import pygame as pg
 
-from random import uniform, randint, choice
+from random import uniform, randint
 from time import perf_counter
 from typing import Final
 
@@ -15,6 +16,8 @@ screen: pg.display = pg.display.set_mode(SCREEN_SIZE)
 stop: bool = False
 
 images: list[pg.Surface] = load_images(path="")
+
+min_slider: Slider = Slider(slider_type="MIN", min=10, max=65, value=0.01, y_pos=500)
 
 def event_handler() -> None | bool:
     """ Handles all the events. """
@@ -42,6 +45,9 @@ def draw_window(screen: pg.display, image: pg.Surface, image_transparency: int, 
     flame_y: int = int(395 - image.get_height())
     image.set_alpha(image_transparency)
     screen.blit(image, (flame_x, flame_y))
+
+    # draw sliders
+    min_slider.render(screen)
 
     pg.display.update()
 
@@ -78,8 +84,8 @@ if __name__ == "__main__":
         flicker_timer += dt
         if flicker_timer >= flicker_time:
             flicker_timer = 0.0
-            while image_number == old_image_number:
-                image_number: int = randint(0, 11)           
+            #while image_number == old_image_number:
+            image_number: int = randint(0, 11)           
             old_image_number: int = image_number
             flicker_time: float = uniform(0.01, 0.4)
             image_transparency: int = randint(150, 255)
