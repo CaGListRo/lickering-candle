@@ -17,7 +17,8 @@ stop: bool = False
 
 images: list[pg.Surface] = load_images(path="")
 
-min_slider: Slider = Slider(slider_type="MIN", min=10, max=65, value=0.01, y_pos=500)
+min_slider: Slider = Slider(slider_type="MIN", min_pos=10, max_pos=110, value=0.01, min_value=0.0, max_value=0.2, y_pos=500)
+max_slider: Slider = Slider(slider_type="MAX", min_pos=10, max_pos=110, value=0.2, min_value=0.2, max_value=1.0, y_pos=530)
 
 def event_handler() -> None | bool:
     """ Handles all the events. """
@@ -48,6 +49,7 @@ def draw_window(screen: pg.display, image: pg.Surface, image_transparency: int, 
 
     # draw sliders
     min_slider.render(screen)
+    max_slider.render(screen)
 
     pg.display.update()
 
@@ -65,8 +67,10 @@ if __name__ == "__main__":
     # set the image transparency
     image_transparency: int = randint(150, 255)
     # to make the candle flicker
+    min_value: float = 0.01
+    max_value: float = 0.2
     flicker_timer: float = 0.0
-    flicker_time: float = uniform(0.01, 0.2)
+    flicker_time: float = uniform(min_value, max_value)
     while not stop:
         # calculate delta time
         dt: float = perf_counter() - old_time
@@ -87,7 +91,11 @@ if __name__ == "__main__":
             #while image_number == old_image_number:
             image_number: int = randint(0, 11)           
             old_image_number: int = image_number
-            flicker_time: float = uniform(0.01, 0.4)
+            if min_slider.check_collision():
+                min_value = min_slider.get_value()
+            if max_slider.check_collision():
+                max_value = max_slider.get_value()
+            flicker_time: float = uniform(min_value, max_value)
             image_transparency: int = randint(150, 255)
 
 

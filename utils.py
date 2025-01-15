@@ -54,7 +54,8 @@ class Slider:
         self.min_value: float = min_value
         self.max_value: float = max_value  
         self.range: int = self.max_pos - self.min_pos
-        self.pos: list[int] = [self.min_pos + self.range * self.value, y_pos]      
+        value_in_percent: float = self.value / (self.max_value - self.min_value)
+        self.pos: list[int] = [self.min_pos + self.range * value_in_percent, y_pos]      
         self.rect: pg.rect = self.image.get_rect(center=self.pos)
         self.outer_slider_path: tuple[int] = (self.min_pos - 2, y_pos - 5, self.range + 4, 10)
         self.inner_slider_path: tuple[int] = (self.min_pos, y_pos - 3, self.range, 6)
@@ -81,7 +82,7 @@ class Slider:
 
             self.rect.center = self.pos
 
-            self.value = (self.pos[0] - self.min_pos) / self.range
+            self.value = (self.pos[0] - self.min_pos) / self.range * self.max_value
             return True
 
         if not pg.mouse.get_pressed()[0]:
