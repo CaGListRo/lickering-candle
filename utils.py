@@ -47,7 +47,7 @@ class Slider:
         self.font: pg.font.Font = pg.font.SysFont("Comicsans", 23)
         self.render_text()
         self.half_text_height: int = self.text.get_height() // 2
-        self.image: pg.Surface = pg.Surface((10, 20))
+        self.image: pg.Surface = pg.Surface((15, 30))
         self.min_pos: int = min_pos
         self.max_pos: int = max_pos    
         self.value: float = value
@@ -85,7 +85,7 @@ class Slider:
             self.value = (self.pos[0] - self.min_pos) / self.range * self.max_value
             return True
 
-        if not pg.mouse.get_pressed()[0]:
+        if not pg.mouse.get_pressed()[0] and self.collided:
             self.collided = False
             self.rect.center = self.pos
 
