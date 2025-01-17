@@ -45,7 +45,7 @@ def draw_window(screen: pg.display, image: pg.Surface, image_transparency: int, 
     
     # draw flame
     flame_x: int = 395 - 34  # calculate the x position
-    flame_y: int = int(395 - image.get_height())
+    flame_y: int = int(395 - image.get_height())  # calculate the y position
     image.set_alpha(image_transparency)
     screen.blit(image, (flame_x, flame_y))
 
@@ -64,12 +64,12 @@ if __name__ == "__main__":
     fps_timer: float = 0.0
     fps_counter: int = 0
     fps: int = 0
-    # backgound color
+    # background color
     background_color: float = 100.0
     # choose an image
     image_number: int = randint(0, 11)
     # old image to avoid doubles
-    old_image_number: int = image_number
+    # old_image_number: int = image_number
     # set the image transparency
     dim: float = 150.0
     image_transparency: int = randint(int(dim), 255)
@@ -78,37 +78,50 @@ if __name__ == "__main__":
     max_value: float = 0.2
     flicker_timer: float = 0.0
     flicker_time: float = uniform(min_value, max_value)
+    # main loop
     while not stop:
         # calculate delta time
         dt: float = perf_counter() - old_time
         old_time = perf_counter()
+        # fps break
+        if dt < 1 / 60:
+            # calculate waiting time
+            waiting_time: int = int(((1 / 60) - dt) * 1000)
+            pg.time.delay(waiting_time)
         # count the frames
         fps_counter += 1
         # increase the fps timer
         fps_timer += dt
+        # count the fps
         if fps_timer >= 1:
             fps = fps_counter  
             fps_counter = 0
             fps_timer = 0
+        # call the event handler
         stop = event_handler()
-        
+        # increase flicker time
         flicker_timer += dt
         if flicker_timer >= flicker_time:
             flicker_timer = 0.0
-            #while image_number == old_image_number:
-            image_number: int = randint(0, 11)           
-            old_image_number: int = image_number
+            # while image_number == old_image_number:  # to ensure that the same image comes twice or more after another
+            image_number: int = randint(0, 11)  # get the next image number         
+            # old_image_number: int = image_number  # to ensure that the same image comes twice or more after another
+            # check the min and max sliders
             if min_slider.check_collision():
                 min_value = min_slider.get_value()
             if max_slider.check_collision():
                 max_value = max_slider.get_value()
+            # set the values of the min and max slider
             flicker_time: float = uniform(min_value, max_value)
+            # check the dim slider
             if dim_slider.check_collision():
                 dim = dim_slider.get_value()
+            # get new image transparency according to the value of the dim_slider
+            image_transparency: int = randint(int(dim), 255)
+            # check the background color slider
             if background_slider.check_collision():
                 background_color = background_slider.get_value()
-            image_transparency: int = randint(int(dim), 255)
-
+        # draw the window/screen    
         draw_window(screen, images[image_number], image_transparency, fps, background_color)
 
 

@@ -47,14 +47,16 @@ class Slider:
         self.font: pg.font.Font = pg.font.SysFont("Comicsans", 23)
         self.render_text()
         self.half_text_height: int = self.text.get_height() // 2
-        self.image: pg.Surface = pg.Surface((15, 30))
+        self.image: pg.Surface = pg.Surface((17, 32))
+        self.image.fill("white")
+        pg.draw.rect(self.image, "black", (2, 2, 13, 28))
         self.min_pos: int = min_pos
         self.max_pos: int = max_pos    
         self.value: float = value
         self.min_value: float = min_value
         self.max_value: float = max_value  
         self.range: int = self.max_pos - self.min_pos
-        value_in_percent: float = self.value / (self.max_value - self.min_value)
+        value_in_percent: float = (self.value - self.min_value) / (self.max_value - self.min_value)
         self.pos: list[int] = [self.min_pos + self.range * value_in_percent, y_pos]      
         self.rect: pg.rect = self.image.get_rect(center=self.pos)
         self.outer_slider_path: tuple[int] = (self.min_pos - 2, y_pos - 5, self.range + 4, 10)
@@ -70,7 +72,8 @@ class Slider:
     def check_collision(self) -> bool:
         """ Checks if the slider has been clicked and handles the sliding mechanism. """
         mouse_pos: tuple[int] = pg.mouse.get_pos()
-        self.collided = self.rect.collidepoint(mouse_pos)
+        if self.rect.collidepoint(mouse_pos):
+            self.collided = True
 
         if pg.mouse.get_pressed()[0] and self.collided:
             self.pos[0] = mouse_pos[0]
