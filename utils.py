@@ -44,9 +44,7 @@ class Slider:
         y_pos (int): The y position of the slider.
         """
         self.slider_type: str = slider_type
-        self.font: pg.font.Font = pg.font.SysFont("Comicsans", 23)
-        self.render_text()
-        self.half_text_height: int = self.text.get_height() // 2
+        
         self.image: pg.Surface = pg.Surface((17, 32))
         self.image.fill("white")
         pg.draw.rect(self.image, "black", (2, 2, 13, 28))
@@ -62,10 +60,13 @@ class Slider:
         self.outer_slider_path: tuple[int] = (self.min_pos - 2, y_pos - 5, self.range + 4, 10)
         self.inner_slider_path: tuple[int] = (self.min_pos, y_pos - 3, self.range, 6)
         self.collided: bool = False
+        self.font: pg.font.Font = pg.font.SysFont("Comicsans", 23)
+        self.render_text()
+        self.half_text_height: int = self.text.get_height() // 2
 
     def render_text(self) -> None:
         """ Renders the text for the slider. """
-        text_to_render: str = self.slider_type
+        text_to_render: str = f"{self.slider_type}: {round(self.value, 2)}"
         self.text_shadow: pg.Surface = self.font.render(text_to_render, True, "black")
         self.text: pg.Surface = self.font.render(text_to_render, True, "white")
 
@@ -86,6 +87,7 @@ class Slider:
             self.rect.center = self.pos
 
             self.value = (self.pos[0] - self.min_pos) / self.range * self.max_value
+            self.render_text()
             return True
 
         if not pg.mouse.get_pressed()[0] and self.collided:
